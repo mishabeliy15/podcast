@@ -1,0 +1,13 @@
+{% extends 'main.html' %}
+{% block Reg_or_Log_or_User %}
+<div class="dropdown mg-0" style="float: right; margin: auto;">
+    <button class="btn btn-outline-light" type="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">Sign in</button>
+    <ul class="dropdown-menu" style="background-color: #F5F5F5;">
+        <li><a class="dropdown-item" href="{% url 'myauth:reg' %}">Sign up</a></li>
+    </ul>
+</div>
+{% endblock %}
+{% block content %}
+    {% include 'include/login_include.html' %}
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'main.html' %}
+
+{% block js %}
+    <script>
+        $(document).ready(function(){
+            $('#id_video_id').keypress(function(e){
+              if(e.keyCode==13) $('#btn_add_by_id').click();
+            });
+        });
+    </script>
+{% endblock js %}
+
+{% block content %}
+    {% include 'include/message_include.html' %}
+    <form method="post">
+        {% csrf_token %}
+        <p>
+            <label class="form-text text-white" for="id_video_id">Video ID:</label>
+            <input class="form-control" placeholder="Input ID" type="text" name="video_id" maxlength="128" required="" id="id_video_id">
+        </p>
+        <button id="btn_add_by_id" style="background-color: #2F8787;" class="btn btn-info" type="submit" value="Add">Add podcast</button>
+    </form>
+{% endblock content %}

@@ -1,0 +1,170 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" media="screen" href="
+    {% if mobile %}
+        {% static 'css/main_mobile.css' %}
+    {% else %}
+        {% static 'css/main_pc.css' %}
+    {% endif %}">
+    <link rel="stylesheet" href="{% static 'css/animate.css' %}">
+    <script>let token = "{{ csrf_token }}";</script>
+    <title>{{ title }}</title>
+    <link id="icon" rel="shortcut icon" href="{% static 'img/ico.png' %}" type="image/png">
+</head>
+<header class="" style="width: 100%; margin: 0px;">
+    <nav class="navbar navbar-expand-lg col-12 bg-dark navbar-fixid p-1" style="width: 100%">
+        <div class="container col-10 nav-conteiner" style="float: center; margin: auto;">
+            <div class="form-inline m-0 p-0 col-4">
+                <div class="form-inline dropdown m-0 p-0">
+                    <button class="btn btn-outline-light button-menu" type="button" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false">☰
+                    </button>
+                    <ul class="dropdown-menu" style="background-color: #F5F5F5;">
+                        <li><a class="dropdown-item" href="{% url 'channels:podcast_list' %}">My List</a></li>
+                        <div class="dropdown-divider"></div>
+                        <li><a class="dropdown-item" href="{% url 'channels:add_by_id' %}">Add by ID</a></li>
+                        <!--<div class="dropdown-divider"></div>
+                        <li><a class="dropdown-item" href="#">History</a></li>-->
+                    </ul>
+                </div>
+                <h1 class="form-inline text-white p-0 m-0 AirCast" style="display: inline;">Video2Cast</h1>
+            </div>
+            {% block search_field %}
+                <form action="{% url 'channels:add_by_name' %}" class="form-inline m-0 col-5"
+                      style="float: center; margin: auto;">
+                    <input name="search_request" class="form-inline form-control form-control-search col-8" type="search" placeholder="Search"
+                           aria-label="Search">
+                    <button class="form-inline btn btn-outline-light" style="float: right; margin: auto;" type="submit">🔍</button>
+                </form>
+            {% endblock search_field %}
+            <div class="m-0 col-3">
+                {% block Users_Set %}
+                    {% if user.is_authenticated %}
+                        <div class="dropdown m-0" style="float: right; margin: auto;">
+                            <button class="btn btn-outline-light" type="button" data-toggle="dropdown"
+                                    aria-haspopup="true" aria-expanded="false">{{ user.username }}</button>
+                            <ul class="dropdown-menu" style="background-color: #F5F5F5;">
+                                <!--<li><a class="dropdown-item" href="#">Settings</a></li>
+                                <div class="dropdown-divider"></div> -->
+                                <li><a class="dropdown-item" href="{% url 'myauth:logout' %}">Log out</a></li>
+                            </ul>
+                        </div>
+                        <!--<img src="{{Scr_Users_Img}}" alt="user's image" class="rounded-circle">-->
+                    {% else %}
+                        {% block Reg_or_Log_or_User %}
+                        {% endblock %}
+                    {% endif %}
+                {% endblock %}
+            </div>
+        </div>
+    </nav>
+</header>
+<body class="" style="
+            background-size: 100%;
+            background-color: #040012;
+            width: 100%;
+            height: 100%;
+            ">
+<div class="content">
+    {% block content %}
+    {% endblock %}
+</div>
+{% if user.is_authenticated %}
+<button type="button" class="btn btn-light button-feedback" data-toggle="modal" data-target="#exampleModalCenter"
+        data-whatever="@getbootstrap">Feedback!
+</button>
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered feadbeack-block" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title label-feadbeack" id="exampleModalLabel">Feedback</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="FeedbackForm" action="javascript:add_feedback()" onsubmit="return FeedbackValidator()">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label label-feadbeack">What did you like:</label>
+                        <textarea class="form-control form-control-texterea" id="FeedbackLike"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label label-feadbeack">What did not like:</label>
+                        <textarea class="form-control form-control-texterea" id="FeedbackNotLike"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label label-feadbeack">Found bugs:</label>
+                        <textarea class="form-control form-control-texterea" id="FeedbackBugs"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="close_feedback_form" type="button" class="btn btn-secondary" data-dismiss="modal">
+                        Close
+                    </button>
+                    <input type="submit" class="btn btn-primary" value="Send feedback!">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<footer>
+    {% block footer %}
+    {% endblock footer %}
+</footer>
+
+<script src="{% static 'js/wow.min.js' %}"></script>
+<script>
+    new WOW().init();
+</script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+
+{% block js %}
+{% endblock js %}
+<script>
+    {% if user.is_authenticated %}
+        function FeedbackValidator() {
+            let vals = $('#FeedbackForm textarea');
+            let valide = false;
+            for (let i = 0; i < vals.length; i++)
+                valide = valide || (vals[i].value.length > 0);
+            return valide;
+        }
+
+        function add_feedback() {
+            $.ajax({
+                url: '{% url 'feedback:api_create' %}',
+                type: 'POST',
+                data: {
+                    'csrfmiddlewaretoken': token,
+                    'positive': $('#FeedbackLike')[0].value,
+                    'negative': $('#FeedbackNotLike')[0].value,
+                    'bugs': $('#FeedbackBugs')[0].value
+                },
+                dataType: 'json',
+                success: function (response) {
+                    console.log(response);
+                    $('#close_feedback_form').click();
+                },
+                error: function (response) {
+                    console.log(response);
+                }
+            });
+        }
+    {% endif %}
+</script>
+</body>
+</html>

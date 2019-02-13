@@ -1,0 +1,129 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" media="screen" href="
+    {% if mobile %}
+        {% static 'css/main_mobile.css' %}
+    {% else %}
+        {% static 'css/main_pc.css' %}
+    {% endif %}">
+    <link rel="stylesheet" href="{% static 'css/animate.css' %}">
+    <script>let token = "{{ csrf_token }}";</script>
+    <title>{{ title }}</title>
+    <link id="icon" rel="shortcut icon" href="{% static 'img/ico.png' %}" type="image/png">
+</head>
+<body class="" style="
+            background-size: 100%;
+            background-color: #040012;
+            width: 100%;
+            height: 100%;
+            ">
+<div class="content">
+    <div class="startpage-block-main">
+        <div class="startpage-conteiner conteiner-right">
+            <h1 class="startpage-title-main white">
+                Stop wasting your time!
+            </h1>
+            <h2 class="startpage-text-main white">
+                All your podcasts in the same place
+            </h2>
+            <a href="{% url 'myauth:reg' %}" class="startpage-btn btn btn-outline-light wow heartBeat" aria-haspopup="true"
+               aria-expanded="false">
+                <span class="startpage-a link white">Get it now!</span>
+            </a>
+        </div>
+        <div class="startpage-img wow bounceInLeft"></div>
+    </div>
+    <div class="startpage-block wow slideInUp">
+        <h1 class="startpage-title white">
+            Stop watching YouTube! Start listening to it!
+        </h1>
+        <h2 class="startpage-text white">
+            &nbsp&nbsp&nbsp&nbspThe Biggest benefit, that our service gives to you is TIME. You don't need to download
+            any programmes and soft, you don't need to download all video to make a podcast. You don't need to download
+            soft with fake Google apps to listen to podcasts from video. Video2Cast saves your time, money and traffic.
+        </h2>
+    </div>
+    <div class="startpage-line"></div>
+    <div class="startpage-block">
+        <div class="startpage-conteiner conteiner-left">
+            <h1 class="startpage-title white wow bounceInUp">
+                Simple Search
+            </h1>
+            <h2 class="startpage-text white wow pulse">
+                You just need to write the name of the YouTube video and click the Search button.
+            </h2>
+        </div>
+        <div class="startpage-conteiner conteiner-right video"> <!-- ТУТ В ПРАВО БЛОК БАХНУТЬ -->
+            <div class="video-mp4" style="background-image: url('{% static 'img/intro_search.gif' %}')"></div>
+        </div>
+    </div>
+    <div class="startpage-block">
+        <div class="startpage-conteiner conteiner-right">
+            <h1 class="startpage-title white wow bounceInUp" style="margin-top: 90px;">
+                Podcast processing
+            </h1>
+            <h2 class="startpage-text white wow pulse">
+                As you found the fideo, just click on it. The video will be transported to your list.
+            </h2>
+        </div>
+            <div class="startpage-conteiner conteiner-left video">
+                <div class="video-mp4" style="background-image: url('{% static 'img/intro_add.gif' %}')"></div>
+            </div>
+    </div>
+    <div class="startpage-block">
+        <div class="startpage-conteiner conteiner-left">
+            <h1 class="startpage-title white wow bounceInUp" style="margin-top: 50px;">
+                listen To
+            </h1>
+            <h2 class="startpage-text white wow pulse">
+                Just click the menu button at the top left corner of the page and see My List. Click it. That's all. Now
+                you can see all added podcasts, listen to or download.
+            </h2>
+        </div>
+        <div class="startpage-conteiner conteiner-right video">
+            <div class="video-mp4" style="background-image: url('{% static 'img/intro_list.gif' %}')"></div>
+        </div>
+    </div>
+    <div class="startpage-line" style="margin-top: 50px;"></div>
+    <div class="startpage-block startpage-block-ul">
+        <h1 class="startpage-title white">
+            Our advantages
+        </h1>
+        <h2 class="startpage-ul white">
+            <ul>
+                <li class="wow fadeIn">All YouTube video catalogue</li>
+                <li class="wow fadeIn">Convenient interface</li>
+                <li class="wow fadeIn">Incredible design</li>
+                <li class="wow fadeIn">Quick and accurate search</li>
+                <li class="wow fadeIn">The fastest podcast processing</li>
+                <li class="wow fadeIn">High quality audio</li>
+                <li class="wow fadeIn">Download or listen online</li>
+            </ul>
+        </h2>
+    </div>
+    <div class="startpage-line"></div>
+    <div class="startpage-block startpage-block-bottom">
+        <a href="{% url 'myauth:reg' %}" class="startpage-btn-bottom btn btn-outline-light wow zoomIn" aria-haspopup="true"
+           aria-expanded="false">
+            <span class="startpage-a-bottom link white">Get it now!</span>
+        </a>
+    </div>
+</div>
+<script src="{% static 'js/wow.min.js' %}"></script>
+<script>
+    new WOW().init();
+</script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+</body>
+</html>

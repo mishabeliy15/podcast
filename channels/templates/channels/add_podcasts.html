@@ -1,0 +1,160 @@
+{% extends 'main.html' %}
+{% block search_field %}
+    <div class="form-inline m-0 col-5" style="float: center; margin: auto;">
+        <input id="name_search_video" name="search_request" class="form-inline form-control form-control-search col-8" type="search"
+               placeholder="Search" aria-label="Search">
+        <button id="Search" onclick="SearchButton_OnClick()" class="btn btn-outline-light"
+                style="float: right; margin: auto;" type="button">🔍
+        </button>
+    </div>
+{% endblock search_field %}
+
+{% block js %}
+    <script>
+        'use strict';
+        $(document).ready(function () {
+            $('#name_search_video').keypress(function (e) {
+                if (e.keyCode == 13) {
+                    $('#Search').click();
+                }
+            });
+        });
+
+        {% if req %}
+            name_search_video.value = "{{ req }}";
+            $('#Search').click();
+        {% endif %}
+
+        let founded = null;
+
+        function SearchButton_OnClick() {
+            if (!name_search_video.value) {
+            }
+            else {
+                let MaxOutput = 33;
+                history.pushState({search_request:name_search_video.value}, document.title, '/channels/add_by_name/?search_request=' + name_search_video.value);
+                $.ajax({
+                    url: '{% url 'channels:api_search_videos' %}',
+                    type: 'GET',
+                    data: {
+                        'video_name': name_search_video.value,
+                        'maxResults': MaxOutput
+                    },
+                    dataType: 'json',
+                    success: function (resp) {
+                        console.log(resp);
+                        founded = resp;
+                        let div_searchlist = document.getElementById("searchlist");
+                        div_searchlist.innerHTML = ``;
+                        let month = {
+                            "1": "Jan.",
+                            "2": "Feb.",
+                            "3": "Mar.",
+                            "4": "Apr.",
+                            "5": "May.",
+                            "6": "Jun.",
+                            "7": "Jul.",
+                            "8": "Aug.",
+                            "9": "Sep.",
+                            "10": "Oct.",
+                            "11": "Nov.",
+                            "12": "Dec."
+                        };
+
+                        for (let i = 0; i < MaxOutput; i++) {
+                            if(resp.items[i].snippet.liveBroadcastContent === "live")
+                                continue;
+                            let date = resp.items[i].snippet.publishedAt;
+                            date = date.substr(0, date.indexOf("T")).split("-");
+                            date = new Date(+date[0], +date[1] - 1, +date[2]);
+
+
+                            div_searchlist.innerHTML += `
+                            <div class="card-block text-white">
+                                <div class="m-0 card-image" style="background-image: url(${resp.items[i].snippet.thumbnails.medium.url});">
+                                    <div class="podcast-date">
+                                        ${date}
+                                    </div>
+                                    <div class="podcast-date podcast-date-right" align="right">
+                                        ${time_convert(resp.items[i]['contentDetails'].duration)}
+                                    </div>
+                                </div>
+                                <div class="m-0 p-2">
+                                    <div class="card-block-text card-block-text-name">
+                                        <p> ${resp.items[i].snippet.title}</p>
+                                    </div>
+                                    <div class="dropdown-divider divider-card"></div>
+                                    <div style="position: absolute; bottom: 0;">
+                                        <div class="card-block-text card-block-text-channel-name">
+                                            <p> ${resp.items[i].snippet.channelTitle} </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-block-hover">
+                                    <div class="card-block-hover-text" onClick="addPodcastButtons_OnClick(event)" id="p${i}">
+                                        Add to my list!
+                                    </div>
+                                </div>
+                            </div>
+                            `;
+                        }
+                    }
+                });
+            }
+        }
+
+        function addPodcastButtons_OnClick(e) {
+            e.srcElement.onclick = null;
+            e.srcElement.offsetParent.style.opacity = 0.8;
+            e.srcElement.offsetParent.style.cursor = 'default';
+            e.srcElement.innerHTML = "Adding...";
+            $.ajax({
+                url: '{% url 'channels:userpodcast-list' %}',
+                type: 'POST',
+                data: {
+                    'csrfmiddlewaretoken': token,
+                    'video_id': founded.items[e.srcElement.id.substr(1)].id
+                },
+                dataType: 'json',
+                success: function (resp) {
+                    //console.log(resp);
+                    e.srcElement.innerHTML = '<a href="/channels/podcast_list/" style="color: #0016aa; font-weight: bold; text-decoration: none; cursor: pointer;">Added </a>';
+                },
+                error: function (resp) {
+                    e.srcElement.innerHTML = 'Error!';
+                }
+            });
+        }
+
+        function time_convert(s) {
+            let temp = '',seconds = 0, nums = new Set(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']);
+            let mult = {'S': 1, 'M': 60, 'H': 3600};
+            for (let i = 2; i < s.length; i++)
+                if (nums.has(s[i])) temp += s[i];
+                else {
+                    seconds += +temp * mult[s[i]];
+                    temp = '';
+                }
+            return timetoString(seconds);
+        }
+        function timetoString(s) {
+            s |= 0;
+            let time = [s % 60];
+            let min = s / 60 | 0;
+            if (min >= 60){
+                time.push(min % 60);
+                time.push(min / 60 | 0);
+            } else time.push(min);
+            time.reverse();
+            for (let i = time.length - 1; i >= +(time.length > 2); i--)
+                if (time[i] < 10) time[i] = "0" + time[i].toString();
+            return time.length > 1 ? time.join(":") : "00:" + time.join(":");
+    }
+    </script>
+{% endblock js %}
+
+{% block content %}
+    <div class="form-inline" id="searchlist"
+         style="align-items: center; align-content: center; justify-content: center;">
+    </div>
+{% endblock content %}

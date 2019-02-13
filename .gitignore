@@ -1,0 +1,13 @@
+*.pyc
+*.pyo
+*~
+.idea/
+__pycache__
+venv/
+*.log
+*.sqlite3
+*.mp3
+db.sqlite3
+static/audio/
+myprojectvenv
+static_files

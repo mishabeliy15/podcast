@@ -1,0 +1,33 @@
+<div class="paginator">
+    <nav aria-label="Page navigation" style="">
+      <ul class="pagination" style="">
+          {% if page_obj.has_previous %}
+            <li class="page-item">
+              <a class="page-link" style="" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                <span class=""><<=</span>
+              </a>
+            </li>
+          {% endif %}
+        {% for number in page_obj.paginator.page_range %}
+            {% if number == page_obj.number %}
+                <li class="page-item active" style="z-index: 0;">
+                    <a class="page-link text-white" style="" href="?page={{ number }}">{{ number }}</a>
+                </li>
+            {% else %}
+                <li class="page-item">
+                    <a class="page-link text-black" style="" href="?page={{ number }}">{{ number }}
+                        <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+            {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+            <li class="page-item">
+              <a class="page-link" style="" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                <span class="" aria-hidden="true">=>></span>
+              </a>
+            </li>
+        {% endif %}
+      </ul>
+    </nav>
+</div>
