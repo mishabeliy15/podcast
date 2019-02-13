@@ -223,7 +223,7 @@ class Player {
             i++;
         } while (!this.playlist.results[this.current]['podcast']['processed']);
         this.audio.pause();
-        this.audio.src = this.url + this.playlist.results[this.current]['podcast']['video_id'] + ".mp3";
+        this.audio.src = this.url + this.playlist.results[this.current]['podcast']['video_id'] + ".m4a";
         this.widget_name.innerText = this.playlist.results[this.current]['podcast']['name'];
         this.audio.play();
         this.fill.style.width = "0%";

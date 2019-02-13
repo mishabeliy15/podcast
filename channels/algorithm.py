@@ -7,12 +7,8 @@ API_KEY = 'AIzaSyBh2bOOSuTVIx1At1cksccOWirYtq_jHrA'
 def download_mp3_from_video(url, name):
     outtmpl = "static/audio/" + name + '.%(ext)s'
     ydl_opts = {
-        'format': 'bestaudio/best',
+        'format': 'audio/m4a',
         'outtmpl': outtmpl,
-        'postprocessors': [
-            {'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3', },
-            {'key': 'FFmpegMetadata'},
-        ],
     }
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         ydl.download([url])
