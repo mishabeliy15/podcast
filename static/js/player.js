@@ -14,11 +14,51 @@ function ajax(url, successFunc) {
         type: 'GET',
         dataType: 'json',
         success: function (resp) {
-            console.log(resp);
-            successFunc(resp);
+            //console.log(resp);
+            if (successFunc) successFunc(resp);
         },
         error: function (resp) {
             console.log(resp);
+        }
+    });
+}
+
+function post(props) {
+    $.ajax({
+        url: props.url,
+        headers: {
+            'X-CSRFTOKEN': token
+        },
+        type: 'POST',
+        dataType: 'json',
+        data: props.data ? props.data : '',
+        success: function (resp) {
+            //console.log(resp);
+            if (props.success) props.success(resp);
+        },
+        error: function (resp) {
+            console.log(resp);
+            if (props.error) props.error(resp);
+        }
+    });
+}
+
+function patch(props) {
+    $.ajax({
+        url: props.url,
+        headers: {
+            'X-CSRFTOKEN': token
+        },
+        type: 'PATCH',
+        dataType: 'json',
+        data: props.data ? props.data : '',
+        success: function (resp) {
+            //console.log(resp);
+            if (props.success) props.success(resp);
+        },
+        error: function (resp) {
+            console.log(resp);
+            if (props.error) props.error(resp);
         }
     });
 }
@@ -71,6 +111,76 @@ class Player {
         });
         this.timer = 0;
         this.last_dur = 0;
+        this.last_dur2 = 0;
+        this.timer2 = 0;
+        ajax('/history/api/record/', (resp) => {
+            if (resp.results.length > 0) {
+                let last = resp.results[0];
+                let prev = this.playlist.previous;
+                let search = this.find(last.my_podcast);
+                let search_req = () => {
+                    if (search < 0 && this.playlist.next)
+                        ajax(this.playlist.next, (resp) => {
+                            resp.results = this.playlist.results.concat(resp.results);
+                            this.playlist = resp;
+                            this.playlist.previous = prev;
+                            search = this.find(last.my_podcast);
+                            search_req();
+                        });
+                    else if (search < 0 && this.playlist.previous) {
+                        ajax(this.playlist.previous, (resp) => {
+                            resp.results = resp.results.concat(this.playlist.results);
+                            this.playlist = resp;
+                            this.playlist.next = null;
+                            search = this.find(last.my_podcast);
+                            search_req();
+                        });
+                    } else if (search > 0) {
+                        this.current = search;
+                        this.audio.src = this.url + this.playlist.results[this.current]['podcast']['video_id'] + ".m4a";
+                        this.widget_name.innerText = this.playlist.results[this.current]['podcast']['name'];
+                        this.audio.currentTime = last.end_on;
+                        this.updateSeek();
+                    }
+                };
+                search_req();
+            }
+        });
+    }
+
+    find(id) {
+        for (let i = 0; i < this.playlist.results.length; i++)
+            if (id === this.playlist.results[i].id) return i;
+        return -1;
+    }
+
+    push_history() {
+        if (this.playlist.results[this.current].id)
+            post({
+                'url': '/history/api/record/',
+                'data': {
+                    'my_podcast': this.playlist.results[this.current].id
+                },
+                'success': (resp) => {
+                    this.last_rec = resp;
+                }
+            });
+        else console.log("Error push history");
+    }
+
+    update_rec(listen) {
+        if (this.last_rec)
+            patch({
+                'url': `/history/api/record/${this.last_rec.id}/`,
+                'data': {
+                    'listened': this.last_rec.listened + listen,
+                    'end_on': Math.trunc(this.audio.currentTime)
+                },
+                'success': (resp) => {
+                    this.last_rec = resp;
+                }
+            });
+        else this.push_history();
     }
 
     set_volume(vol) {
@@ -163,11 +273,17 @@ class Player {
         $("#play-time-left")[0].innerText = pl.timetoString(pl.audio.currentTime);
         $("#play-time-right")[0].innerText = "-" + pl.timetoString(pl.audio.duration - pl.audio.currentTime);
         let temp = pl.audio.currentTime - pl.last_dur;
-        if (temp < 2 && temp > 0)
-            pl.timer += temp;
+        if (temp < 2 && temp > 0) pl.timer += temp;
         pl.last_dur = pl.audio.currentTime;
         if (pl.timer >= 15) {
             Player.listened_n(pl.playlist.results[pl.current].id);
+            pl.timer = 0;
+        }
+        let temp2 = pl.audio.currentTime - pl.last_dur2;
+        if(temp < 2 && temp > 0) pl.timer2 += temp;
+        pl.last_dur2 = pl.audio.currentTime;
+        if(pl.timer >= 1){
+            pl.update_rec(Math.round(pl.timer * 100)/100);
             pl.timer = 0;
         }
     }
@@ -231,6 +347,7 @@ class Player {
         document.title = this.playlist.results[this.current]['podcast']['name'];
         //$("#icon")[0].href = this.playlist.results[this.current]['podcast']['thumbnails_url'];
         setWatched(this.playlist.results[this.current].id);
+        this.push_history();
         return true;
     }
 

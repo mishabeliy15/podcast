@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
-from .views import redirect_index_view, StartPageView, IndexView
+from .views import StartPageView, IndexView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -9,4 +9,5 @@ urlpatterns = [
     path('channels/', include('channels.urls')),
     path('feedback/', include('feedback.urls')),
     path('startpage/', StartPageView.as_view(), name='startpage'),
+    path('history/', include('history.urls')),
 ]

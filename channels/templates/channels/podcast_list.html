@@ -25,7 +25,7 @@
                         </div>
                     </div>
                     <div class="card-block-audio-hover">
-                        <div id="myp{{ forloop.counter0 }}" onclick="clickPodcast({{ forloop.counter0 }})"
+                        <div id="myp{{ forloop.counter0 }}" onclick="clickPodcast({{ forloop.counter0 }},{{ user_podcast.id }})"
                              class="card-block-audio-hover-text">
                             <!-- сделать с js -->
                             {% if user_podcast.podcast.processed %}
@@ -196,8 +196,9 @@
             return true;
         }
 
-        function clickPodcast(id) {
-            if (player.playlist.results[id].podcast.processed) player.playID(id);
+        function clickPodcast(id, bd) {
+            let found = player.find(bd);
+            if (found >= 0 && player.playlist.results[found].podcast.processed) player.playID(found);
         }
 
         function getPodcasts(p = 1, successFunc) {
