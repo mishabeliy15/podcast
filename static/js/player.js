@@ -135,7 +135,7 @@ class Player {
                             search = this.find(last.my_podcast);
                             search_req();
                         });
-                    } else if (search > 0) {
+                    } else if (search >= 0) {
                         this.current = search;
                         this.audio.src = this.url + this.playlist.results[this.current]['podcast']['video_id'] + ".m4a";
                         this.widget_name.innerText = this.playlist.results[this.current]['podcast']['name'];
