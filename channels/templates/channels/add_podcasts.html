@@ -121,7 +121,8 @@
                     e.srcElement.innerHTML = '<a href="/channels/podcast_list/" style="color: #0016aa; font-weight: bold; text-decoration: none; cursor: pointer;">Added </a>';
                 },
                 error: function (resp) {
-                    e.srcElement.innerHTML = 'Error!';
+                    console.log(resp);
+                    e.srcElement.innerHTML = resp.responseJSON['video_id'][0];
                 }
             });
         }

@@ -17,6 +17,7 @@ def search_videosView(request):
     res = search_videos(get['video_name'], get['maxResults']) if get['maxResults'] else search_videos(get['name'])
     return JsonResponse(res)
 
+
 @login_required
 def search_videos_view_api2(request):
     get = request.GET

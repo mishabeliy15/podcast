@@ -3,6 +3,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers
 from .models import UserPodcast, Podcast
 from .algorithm import create_podcast, download_audio_Thread
+from datetime import datetime, timedelta
 
 
 class PodcastSerializer(serializers.ModelSerializer):
@@ -22,6 +23,15 @@ class UserPodcastSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def validate_video_id(self, value):
+        lim_hour = 6
+        time_threshold = datetime.now() - timedelta(hours=lim_hour)
+        time = 0
+        lim_hour *= 60**2
+        p_user = UserPodcast.objects.filter(added_date__gte=time_threshold, owner=self.context['request'].user)
+        for i in p_user:
+            time += i.podcast.duration
+            if time >= lim_hour:
+                raise serializers.ValidationError("You have added more 10 hours contents last 6 hours.")
         obj = None
         try:
             obj = Podcast.objects.get(video_id=value)
