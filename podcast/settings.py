@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = [
     'channels.apps.ChannelsConfig',
     'myauth.apps.MyauthConfig',
+    'history.apps.HistoryConfig',
     'feedback.apps.FeedbackConfig',
     'django.contrib.admin',
     'django.contrib.auth',

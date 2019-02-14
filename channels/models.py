@@ -33,6 +33,15 @@ class UserPodcast(models.Model):
     duration_listened = models.IntegerField(default=0)
     downloads = models.IntegerField(default=0)
 
+    def delete(self, using=None, keep_parents=False):
+        if UserPodcast.objects.filter(podcast=self.podcast).count() > 1:
+            return super().delete(using, keep_parents)
+        else:
+            import os
+            from podcast.settings import BASE_DIR
+            os.remove(os.path.join(BASE_DIR, "static/audio/{0}.m4a".format(self.podcast.video_id)))
+            return self.podcast.delete()
+
     def __str__(self):
         return self.podcast.name
 
