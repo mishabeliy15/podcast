@@ -10,4 +10,7 @@ urlpatterns = [
     path('feedback/', include('feedback.urls')),
     path('startpage/', StartPageView.as_view(), name='startpage'),
     path('history/', include('history.urls')),
+    path('auth/', include('djoser.urls')),
+    path('auth/', include('djoser.urls.authtoken')),
+    path('auth/', include('djoser.urls.jwt')),
 ]
