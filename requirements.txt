@@ -2,3 +2,5 @@ Django==2.1.2
 requests
 youtube_dl
 djangorestframework
+djoser
+djangorestframework_simplejwt
