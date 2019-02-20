@@ -304,7 +304,7 @@
             download_inc(myPodcastList.results[id].id);
             let link = document.createElement('a');
             link.setAttribute('href', static_url + "audio/" + player.playlist.results[id].podcast.video_id + ".m4a");
-            link.setAttribute('download', player.playlist.results[id].podcast.name + ".m4a");
+            link.setAttribute('download', player.playlist.results[id].podcast.name + ".mp3");
             link.click();
             return true;
         }
